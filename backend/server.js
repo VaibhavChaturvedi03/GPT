@@ -1,19 +1,41 @@
-import Groq from "groq-sdk";
+import express from 'express';
 import "dotenv/config";
+import cors from 'cors';
 
-const client = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
+const app = express();
+const PORT = 8080;
+
+app.use(express.json()); //to parse incoming req
+app.use(cors());
+
+app.listen(PORT, () => {
+    console.log(`Server is running on ${PORT}`);
 });
 
-async function run() {
-    const completion = await client.chat.completions.create({
-        model: "llama-3.1-8b-instant",
-        messages: [
-            { role: "user", content: "Tell me a joke related to Computer Science" }
-        ],
-    });
+app.post("/test", async (req, res) => {
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{
+                "role": "user",
+                "content": req.body.message
+            }]
+        })
+    };
 
-    console.log(completion.choices[0].message.content);
-}
+    try {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions",options);
+        const data = await response.json();
+        res.send(data.choices[0].message.content); //reply
+    } catch (err) {
+        console.log(err);
+    }
+});
 
-run();
+
+
