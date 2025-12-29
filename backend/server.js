@@ -2,12 +2,15 @@ import express from 'express';
 import "dotenv/config";
 import mongoose from "mongoose";
 import cors from 'cors';
+import chatRoutes from './routes/chat.js';
 
 const app = express();
 const PORT = 8080;
 
 app.use(express.json()); //to parse incoming req
 app.use(cors());
+
+app.use('/api',chatRoutes);
 
 const connectDB = async()=>{
     try{
