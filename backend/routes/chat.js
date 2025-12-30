@@ -48,4 +48,21 @@ router.get('/thread/:threadId', async(req,res)=>{
     }
 });
 
+//DELETE from threadId
+router.delete('/thread/:threadId',async(req,res)=>{
+    try{
+        const {threadId} = req.params;
+        const deletedThread = await Thread.findOneAndDelete({threadId});
+
+        if(!deletedThread){
+            res.status(404).json({error: "Thread not found"});
+        }
+
+        res.status(200).json({success: "Thread deleted successfully"});
+    }catch(err){
+       console.log(err);
+        res.status(500).send({error: "failed to delete"}); 
+    }
+});
+
 export default router;
