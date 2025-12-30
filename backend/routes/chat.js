@@ -20,4 +20,25 @@ router.post('/test' , async(req,res)=>{
     }
 });
 
+//GET all threads
+router.get('/thread',async(req,res)=>{
+    try{
+        const threads = await Thread.find({}).sort({updatedAt: -1}); //to get in descending order..most recent at top
+        res.json(threads);
+    }catch(err){
+        console.log(err);
+        res.status(500).send({error: "failed to fetch"});
+    }
+});
+
+//GET particular thread from threadId
+router.get('/thread/:threadId', async(req,res)=>{
+    try{
+        
+    }catch(err){
+        console.log(err);
+        res.status(500).send({error: "failed to fetch"});
+    }
+});
+
 export default router;
