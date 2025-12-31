@@ -7,7 +7,7 @@ function ChatWindow(){
             <div className="navbar">
                 <span>GPT <i class="fa-solid fa-chevron-down"></i> </span>
                 <div className="userIconDiv">
-                    <span><i class="fa-solid fa-user"></i></span>
+                    <span className="userIcon"><i class="fa-solid fa-user"></i></span>
                 </div>
             </div>
             <Chat></Chat> 
