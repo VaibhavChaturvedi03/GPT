@@ -33,6 +33,10 @@
     width: fit-content;
 }
 
-.gptMsg{
+.hljs{
+    border-radius: 14px;
+}
 
+pre{
+    white-space: pre-wrap;
 }
