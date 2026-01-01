@@ -1,7 +1,9 @@
 .chats{
     max-width: 700px;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 8rem;
+    width: 100%;
 }
 
 .chats::-webkit-scrollbar {
@@ -22,6 +24,9 @@
 .gptDiv{
     text-align: left;
     font-size: 0.9rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 .userMsg{
@@ -31,6 +36,9 @@
     margin-left: 15rem;
     max-width: 500px;
     width: fit-content;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .hljs{
