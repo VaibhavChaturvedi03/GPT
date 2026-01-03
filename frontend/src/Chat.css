@@ -4,16 +4,13 @@
     overflow-x: hidden;
     padding: 8rem;
     width: 100%;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .chats::-webkit-scrollbar {
     display: none;
 }
-
-.chats {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-} 
 
 .userDiv{
     display: flex;
