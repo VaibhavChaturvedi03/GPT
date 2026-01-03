@@ -8,6 +8,7 @@ function ChatWindow() {
 
     const { prompt, setPrompt, reply, setReply, currThreadId, prevChats, setPrevChats, setNewChat } = useContext(MyContext);
     const [loading, setLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     const getReply = async() => {
         setLoading(true);
@@ -52,14 +53,26 @@ function ChatWindow() {
         setPrompt("");
     }, [reply]);
 
+    const handleProfileClick = () => {
+        setIsOpen(!isOpen);
+    }
+
     return (
         <div className="chatWindow">
             <div className="navbar">
                 <span>GPT <i className="fa-solid fa-chevron-down"></i> </span>
-                <div className="userIconDiv">
+                <div className="userIconDiv" onClick={handleProfileClick}>
                     <span className="userIcon"><i className="fa-solid fa-user"></i></span>
                 </div>
             </div>
+            {
+                isOpen &&
+                <div className="dropDown">
+                    <div className="dropDownItems"><i className="fa-solid fa-cloud-arrow-up"></i>Upgrade Plan</div>
+                    <div className="dropDownItems"><i className="fa-solid fa-gear"></i>Settings</div>
+                    <div className="dropDownItems"><i className="fa-solid fa-right-from-bracket"></i>Log Out</div>
+                </div>
+            }
             <Chat></Chat>
 
             <ScaleLoader
