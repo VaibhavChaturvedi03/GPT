@@ -3,23 +3,23 @@ import { useContext, useEffect } from 'react';
 import { MyContext } from './MyContext.jsx';
 import { v1 as uuidv1 } from 'uuid';
 
-function Sidebar(){
-    const {allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats} = useContext(MyContext);
+function Sidebar() {
+    const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats } = useContext(MyContext);
 
     const getAllThreads = async () => {
-        try{
+        try {
             const response = await fetch('http://localhost:8080/api/thread');
             const res = await response.json();
-            const filteredData = res.map(thread => ({threadId: thread.threadId, title: thread.title}));
+            const filteredData = res.map(thread => ({ threadId: thread.threadId, title: thread.title }));
             setAllThreads(filteredData);
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         getAllThreads();
-    },[currThreadId])
+    }, [currThreadId])
 
     const createNewChat = () => {
         setNewChat(true);
@@ -29,17 +29,34 @@ function Sidebar(){
         setPrevChats([]);
     }
 
-    return(
+    const changeThread = async (newThreadId) => {
+        setCurrThreadId(newThreadId);
+
+        try{
+            const response = await fetch(`http://localhost:8080/api/thread/${newThreadId}`);
+            const res = await response.json();
+            setPrevChats(res);
+            setNewChat(false);
+        }catch(err){
+            console.log(err);
+        }
+    }
+
+    return (
         <section className="sidebar">
             <button onClick={createNewChat}>
-                <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo"/>
+                <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
                 <span><i className="fa-solid fa-pen-to-square"></i></span> {/* icon from font awesome */}
             </button>
 
             <ul className="history">
                 {
-                    allThreads.map((thread, idx)=>(
-                        <li key={idx}>{thread.title}</li>
+                    allThreads.map((thread, idx) => (
+                        <li key={idx}
+                            onClick={(e) => changeThread(thread.threadId)}
+                        >
+                            {thread.title}
+                        </li>
                     ))
                 }
             </ul>
