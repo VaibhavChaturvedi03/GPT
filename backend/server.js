@@ -12,7 +12,7 @@ const PORT = 8080;
 
 // CORS configuration to allow credentials
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'https://gpt-pi-beige.vercel.app/',
+    origin:'https://gpt-pi-beige.vercel.app/',
     credentials: true
 }));
 
@@ -20,7 +20,7 @@ app.use(express.json()); //to parse incoming req
 
 // Session configuration
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+    secret: process.env.SESSION_SECRET ,
     resave: false,
     saveUninitialized: false,
     cookie: {

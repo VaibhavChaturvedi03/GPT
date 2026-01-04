@@ -9,10 +9,10 @@ router.get('/google', passport.authenticate('google', {
 
 router.get('/google/callback', 
     passport.authenticate('google', { 
-        failureRedirect: process.env.CLIENT_URL || 'https://gpt-pi-beige.vercel.app/'
+        failureRedirect:'https://gpt-pi-beige.vercel.app/'
     }),
     (req, res) => {
-        res.redirect(process.env.CLIENT_URL || 'https://gpt-pi-beige.vercel.app/');
+        res.redirect('https://gpt-pi-beige.vercel.app/');
     }
 );
 

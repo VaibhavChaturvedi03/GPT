@@ -6,7 +6,7 @@ import { v1 as uuidv1 } from 'uuid';
 function Sidebar() {
     const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats, sidebarOpen, setSidebarOpen, user } = useContext(MyContext);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'https://gpt-kwt0.onrender.com';
+    const API_URL ='https://gpt-kwt0.onrender.com';
 
     const getAllThreads = async () => {
         try {
