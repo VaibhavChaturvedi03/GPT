@@ -11,8 +11,12 @@ import authRoutes from './routes/auth.js';
 const app = express();
 const PORT = 8080;
 
+// Determine if we're in production or development
+const isProduction = process.env.NODE_ENV === 'production';
+const frontendURL = isProduction ? 'https://gpt-pi-beige.vercel.app' : 'http://localhost:5173';
+
 app.use(cors({
-    origin:'https://gpt-pi-beige.vercel.app',
+    origin: frontendURL,
     credentials: true
 }));
 
@@ -29,8 +33,8 @@ app.use(session({
     cookie: {
         maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true,
-        secure: true, 
-        sameSite: 'none'
+        secure: isProduction, // Only require HTTPS in production
+        sameSite: isProduction ? 'none' : 'lax' // 'lax' for local, 'none' for cross-origin in production
     }
 }));
 

@@ -4,9 +4,9 @@ import { MyContext } from './MyContext.jsx';
 import { v1 as uuidv1 } from 'uuid';
 
 function Sidebar() {
-    const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats, sidebarOpen, setSidebarOpen, user } = useContext(MyContext);
+    const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats, sidebarOpen, setSidebarOpen, user, setUser } = useContext(MyContext);
 
-    const API_URL ='https://gpt-kwt0.onrender.com';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
     const getAllThreads = async () => {
         try {
@@ -72,38 +72,66 @@ function Sidebar() {
 
     return (
         <section className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-            <button onClick={createNewChat}>
-                <img src="/blacklogo.png" alt="gpt logo" className="logo" />
-                <span><i className="fa-solid fa-pen-to-square"></i></span> {/* icon from font awesome */}
-            </button>
+            <div className="sidebar-header">
+                <button className="new-chat-btn" onClick={createNewChat}>
+                    <img src="/blacklogo.png" alt="gpt logo" className="logo" />
+                    <span className="new-chat-text">New Chat</span>
+                    <span className="edit-icon"><i className="fa-solid fa-pen-to-square"></i></span>
+                </button>
+            </div>
 
-            <ul className="history">
-                {
-                    allThreads.map((thread, idx) => (
-                        <li key={idx}
-                            onClick={(e) => changeThread(thread.threadId)}
-                            className={thread.threadId === currThreadId ? "highlighted": " "}
-                        >
-                            {thread.title}
-                            <i className="fa-solid fa-trash"
-                                onClick={(e) => {
-                                    e.stopPropagation(); //stop event bubbling
-                                    deleteThread(thread.threadId);
-                                }}></i>
-                        </li>
-                    ))
-                }
-            </ul>
+            <div className="sidebar-content">
+                <ul className="history">
+                    {
+                        allThreads.map((thread, idx) => (
+                            <li key={idx}
+                                onClick={(e) => changeThread(thread.threadId)}
+                                className={thread.threadId === currThreadId ? "highlighted": " "}
+                            >
+                                <i className="fa-regular fa-message"></i>
+                                <span className="thread-title">{thread.title}</span>
+                                <i className="fa-solid fa-trash"
+                                    onClick={(e) => {
+                                        e.stopPropagation(); //stop event bubbling
+                                        deleteThread(thread.threadId);
+                                    }}></i>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
 
-            <div className="user-profile">
+            <div className="sidebar-footer">
                 {user && (
                     <>
-                        <img 
-                            src={user.photo} 
-                            alt="User profile" 
-                            className="user-avatar"
-                        />
-                        <span className="user-name">{user.displayName}</span>
+                        <div className="user-profile">
+                            <img 
+                                src={user.picture || '/default-avatar.png'} 
+                                alt="User profile" 
+                                className="user-avatar"
+                            />
+                            <div className="user-info">
+                                <span className="user-name">{user.name}</span>
+                                <button 
+                                    className="logout-btn"
+                                    onClick={async () => {
+                                        try {
+                                            await fetch(`${API_URL}/api/auth/logout`, {
+                                                credentials: 'include'
+                                            });
+                                            setUser(null);
+                                        } catch (error) {
+                                            console.error('Logout failed:', error);
+                                        }
+                                    }}
+                                >
+                                    <i className="fa-solid fa-right-from-bracket"></i> Log out
+                                </button>
+                            </div>
+                        </div>
+                        <div className="branding">
+                            <p>Made by Vaibhav</p>
+                        </div>
                     </>
                 )}
             </div>

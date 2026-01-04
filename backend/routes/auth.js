@@ -2,6 +2,8 @@ import express from 'express';
 import passport from '../config/passport.js';
 
 const router = express.Router();
+const isProduction = process.env.NODE_ENV === 'production';
+const frontendURL = isProduction ? 'https://gpt-pi-beige.vercel.app' : 'http://localhost:5173';
 
 router.get('/google', passport.authenticate('google', { 
     scope: ['profile', 'email'] 
@@ -9,10 +11,13 @@ router.get('/google', passport.authenticate('google', {
 
 router.get('/google/callback', 
     passport.authenticate('google', { 
-        failureRedirect:'https://gpt-pi-beige.vercel.app/'
+        failureRedirect: frontendURL,
+        session: true
     }),
     (req, res) => {
-        res.redirect('https://gpt-pi-beige.vercel.app/');
+        // After successful authentication, redirect to frontend
+        // The session cookie should now be set
+        res.redirect(`${frontendURL}/?authenticated=true`);
     }
 );
 
