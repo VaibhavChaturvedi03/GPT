@@ -6,6 +6,28 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 260px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        position: fixed;
+        left: -320px;
+        top: 0;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        width: 280px;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
 }
 
 button{
@@ -18,6 +40,13 @@ button{
     background-color: transparent;
     border: solid 0.5px rgba(255,255,255,0.5);
     cursor: pointer;
+}
+
+@media (max-width: 480px) {
+    button {
+        margin: 8px;
+        padding: 8px;
+    }
 }
 
 .logo{
