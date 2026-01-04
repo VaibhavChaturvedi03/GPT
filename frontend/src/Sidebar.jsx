@@ -4,7 +4,7 @@ import { MyContext } from './MyContext.jsx';
 import { v1 as uuidv1 } from 'uuid';
 
 function Sidebar() {
-    const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats } = useContext(MyContext);
+    const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats, sidebarOpen, setSidebarOpen } = useContext(MyContext);
 
     const getAllThreads = async () => {
         try {
@@ -27,6 +27,7 @@ function Sidebar() {
         setReply(null);
         setCurrThreadId(uuidv1());
         setPrevChats([]);
+        setSidebarOpen(false); // Close sidebar on mobile after creating new chat
     }
 
     const changeThread = async (newThreadId) => {
@@ -37,6 +38,7 @@ function Sidebar() {
             const res = await response.json();
             setPrevChats(res);
             setNewChat(false);
+            setSidebarOpen(false); // Close sidebar on mobile after selecting thread
         } catch (err) {
             console.log(err);
         }
@@ -62,7 +64,7 @@ function Sidebar() {
     }
 
     return (
-        <section className="sidebar">
+        <section className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
             <button onClick={createNewChat}>
                 <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
                 <span><i className="fa-solid fa-pen-to-square"></i></span> {/* icon from font awesome */}

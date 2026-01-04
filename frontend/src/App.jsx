@@ -12,6 +12,7 @@ function App() {
   const[prevChats, setPrevChats] = useState([]); //stores chat history of current threads
   const[newChat, setNewChat] = useState(true); //to identify if new chat is created
   const[allThreads, setAllThreads] = useState([]); //stores all chat threads
+  const[sidebarOpen, setSidebarOpen] = useState(false); //for mobile sidebar toggle
 
   const providerValues = {
     prompt, setPrompt,
@@ -19,12 +20,14 @@ function App() {
     currThreadId, setCurrThreadId,
     prevChats, setPrevChats,
     newChat, setNewChat,
-    allThreads, setAllThreads
+    allThreads, setAllThreads,
+    sidebarOpen, setSidebarOpen
   };
 
   return (
     <div className="app">
       <MyContext.Provider value={providerValues}>
+        {sidebarOpen && <div className="overlay" onClick={() => setSidebarOpen(false)}></div>}
         <Sidebar></Sidebar>
         <ChatWindow></ChatWindow>
       </MyContext.Provider>

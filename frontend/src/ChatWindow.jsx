@@ -6,7 +6,7 @@ import {ScaleLoader} from 'react-spinners';
 
 function ChatWindow() {
 
-    const { prompt, setPrompt, reply, setReply, currThreadId, prevChats, setPrevChats, setNewChat } = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId, prevChats, setPrevChats, setNewChat, sidebarOpen, setSidebarOpen } = useContext(MyContext);
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -60,7 +60,12 @@ function ChatWindow() {
     return (
         <div className="chatWindow">
             <div className="navbar">
-                <span>GPT <i className="fa-solid fa-chevron-down"></i> </span>
+                <div className="navbarLeft">
+                    <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)}>
+                        <i className="fa-solid fa-bars"></i>
+                    </button>
+                    <span>GPT <i className="fa-solid fa-chevron-down"></i> </span>
+                </div>
                 <div className="userIconDiv" onClick={handleProfileClick}>
                     <span className="userIcon"><i className="fa-solid fa-user"></i></span>
                 </div>
