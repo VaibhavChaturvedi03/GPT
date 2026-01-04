@@ -6,13 +6,15 @@ import {ScaleLoader} from 'react-spinners';
 
 function ChatWindow() {
 
-    const { prompt, setPrompt, reply, setReply, currThreadId, prevChats, setPrevChats, setNewChat, sidebarOpen, setSidebarOpen } = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId, prevChats, setPrevChats, setNewChat, sidebarOpen, setSidebarOpen, setAllThreads } = useContext(MyContext);
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const getReply = async() => {
         setLoading(true);
         setNewChat(false);
+        const isNewThread = prevChats.length === 0;
+        
         const options = {
             method: 'POST',
             headers:{
@@ -29,6 +31,14 @@ function ChatWindow() {
             const res = await response.json();
             console.log(res);
             setReply(res.reply);
+            
+            // Refresh thread list if this is a new thread
+            if(isNewThread) {
+                const threadsResponse = await fetch('https://gpt-kwt0.onrender.com/api/thread');
+                const threads = await threadsResponse.json();
+                const filteredData = threads.map(thread => ({ threadId: thread.threadId, title: thread.title }));
+                setAllThreads(filteredData);
+            }
         }catch(err){
             console.log(err);
         }

@@ -31,7 +31,7 @@ function Chat() {
     }, [prevChats, reply])
 
     return (
-        <>
+        <div className='chatContainer'>
             {newChat && <h1>Start a New Chat</h1>}
             <div className='chats'>
                 {
@@ -65,7 +65,7 @@ function Chat() {
                 }
 
             </div >
-        </>
+        </div>
     )
 }
 
