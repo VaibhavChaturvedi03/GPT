@@ -3,6 +3,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import cors from 'cors';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import passport from './config/passport.js';
 import chatRoutes from './routes/chat.js';
 import authRoutes from './routes/auth.js';
@@ -23,11 +24,15 @@ app.use(session({
     secret: process.env.SESSION_SECRET ,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI,
+        touchAfter: 24 * 3600 // lazy session update
+    }),
     cookie: {
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', 
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+        secure: true, 
+        sameSite: 'none'
     }
 }));
 
