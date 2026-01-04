@@ -1,30 +1,13 @@
 import express from 'express';
 import Thread from '../models/Thread.js';
 import getOpenAiResponse from '../utils/openai.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-//test
-router.post('/test', async (req, res) => {
+router.get('/thread', requireAuth, async (req, res) => {
     try {
-        const thread = new Thread({
-            threadId: "xyz",
-            title: "sample thread"
-        });
-
-        const response = await thread.save();
-        res.send(response);
-
-    } catch (error) {
-        console.log(err);
-        res.status(500).send({ error: "failed to save in DB" });
-    }
-});
-
-//GET all threads
-router.get('/thread', async (req, res) => {
-    try {
-        const threads = await Thread.find({}).sort({ updatedAt: -1 }); //to get in descending order..most recent at top
+        const threads = await Thread.find({ userId: req.user._id }).sort({ updatedAt: -1 }); //to get in descending order..most recent at top
         res.json(threads);
     } catch (err) {
         console.log(err);
@@ -32,11 +15,10 @@ router.get('/thread', async (req, res) => {
     }
 });
 
-//GET particular thread from threadId
-router.get('/thread/:threadId', async (req, res) => {
+router.get('/thread/:threadId', requireAuth, async (req, res) => {
     try {
         const { threadId } = req.params;
-        const thread = await Thread.findOne({ threadId });
+        const thread = await Thread.findOne({ threadId, userId: req.user._id });
 
         if (!thread) {
             res.status(404).json({ error: "Thread not found" });
@@ -49,11 +31,10 @@ router.get('/thread/:threadId', async (req, res) => {
     }
 });
 
-//DELETE from threadId
-router.delete('/thread/:threadId', async (req, res) => {
+router.delete('/thread/:threadId', requireAuth, async (req, res) => {
     try {
         const { threadId } = req.params;
-        const deletedThread = await Thread.findOneAndDelete({ threadId });
+        const deletedThread = await Thread.findOneAndDelete({ threadId, userId: req.user._id });
 
         if (!deletedThread) {
             res.status(404).json({ error: "Thread not found" });
@@ -66,8 +47,7 @@ router.delete('/thread/:threadId', async (req, res) => {
     }
 });
 
-//POST route for chat
-router.post('/chat', async (req, res) => {
+router.post('/chat', requireAuth, async (req, res) => {
     const { threadId, message } = req.body;
 
     if (!threadId || !message) {
@@ -75,12 +55,13 @@ router.post('/chat', async (req, res) => {
     }
 
     try {
-        let thread = await Thread.findOne({ threadId });
+        let thread = await Thread.findOne({ threadId, userId: req.user._id });
 
         if(!thread){
             //create new thread in DB
             thread = new Thread({
                 threadId,
+                userId: req.user._id,
                 title: message,
                 messages: [{role: "user" , content: message}]
             });

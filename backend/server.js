@@ -2,14 +2,40 @@ import express from 'express';
 import "dotenv/config";
 import mongoose from "mongoose";
 import cors from 'cors';
+import session from 'express-session';
+import passport from './config/passport.js';
 import chatRoutes from './routes/chat.js';
+import authRoutes from './routes/auth.js';
 
 const app = express();
 const PORT = 8080;
 
-app.use(express.json()); //to parse incoming req
-app.use(cors());
+// CORS configuration to allow credentials
+app.use(cors({
+    origin: process.env.CLIENT_URL || 'https://gpt-pi-beige.vercel.app/',
+    credentials: true
+}));
 
+app.use(express.json()); //to parse incoming req
+
+// Session configuration
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/api/auth', authRoutes);
 app.use('/api',chatRoutes);
 
 const connectDB = async()=>{
