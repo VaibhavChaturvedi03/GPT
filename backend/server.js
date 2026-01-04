@@ -12,7 +12,7 @@ const PORT = 8080;
 
 // CORS configuration to allow credentials
 app.use(cors({
-    origin:'https://gpt-pi-beige.vercel.app/',
+    origin:'https://gpt-pi-beige.vercel.app',
     credentials: true
 }));
 
