@@ -112,6 +112,47 @@ button:hover{
     border-top: solid 0.25px rgba(255,255,255,0.5);
 }
 
+.user-profile {
+    margin: 10px;
+    padding: 10px;
+    border-top: solid 0.25px rgba(255,255,255,0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    color: #ececec;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+    .user-profile {
+        margin: 8px;
+        padding: 8px;
+    }
+    
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .user-name {
+        font-size: 13px;
+    }
+}
+
 .fa-trash{
     opacity: 0;
     position: absolute;

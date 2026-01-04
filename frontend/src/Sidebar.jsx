@@ -4,11 +4,15 @@ import { MyContext } from './MyContext.jsx';
 import { v1 as uuidv1 } from 'uuid';
 
 function Sidebar() {
-    const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats, sidebarOpen, setSidebarOpen } = useContext(MyContext);
+    const { allThreads, setAllThreads, setCurrThreadId, currThreadId, setNewChat, setPrompt, setReply, setPrevChats, sidebarOpen, setSidebarOpen, user } = useContext(MyContext);
+
+    const API_URL = import.meta.env.VITE_API_URL || 'https://gpt-kwt0.onrender.com';
 
     const getAllThreads = async () => {
         try {
-            const response = await fetch('https://gpt-kwt0.onrender.com/api/thread');
+            const response = await fetch(`${API_URL}/api/thread`, {
+                credentials: 'include'
+            });
             const res = await response.json();
             const filteredData = res.map(thread => ({ threadId: thread.threadId, title: thread.title }));
             setAllThreads(filteredData);
@@ -34,7 +38,9 @@ function Sidebar() {
         setCurrThreadId(newThreadId);
 
         try {
-            const response = await fetch(`https://gpt-kwt0.onrender.com/api/thread/${newThreadId}`);
+            const response = await fetch(`${API_URL}/api/thread/${newThreadId}`, {
+                credentials: 'include'
+            });
             const res = await response.json();
             setPrevChats(res);
             setNewChat(false);
@@ -46,8 +52,9 @@ function Sidebar() {
 
     const deleteThread = async (threadId) => {
         try{
-            const response = await fetch(`https://gpt-kwt0.onrender.com/api/thread/${threadId}`, {
-                method: 'DELETE'
+            const response = await fetch(`${API_URL}/api/thread/${threadId}`, {
+                method: 'DELETE',
+                credentials: 'include'
             });
             const res = await response.json();
 
@@ -88,8 +95,17 @@ function Sidebar() {
                 }
             </ul>
 
-            <div className="sign">
-                <p>By Vaibhav</p>
+            <div className="user-profile">
+                {user && (
+                    <>
+                        <img 
+                            src={user.photo} 
+                            alt="User profile" 
+                            className="user-avatar"
+                        />
+                        <span className="user-name">{user.displayName}</span>
+                    </>
+                )}
             </div>
         </section>
     )
