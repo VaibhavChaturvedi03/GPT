@@ -11,7 +11,6 @@ import authRoutes from './routes/auth.js';
 const app = express();
 const PORT = 8080;
 
-// CORS configuration to allow credentials
 app.use(cors({
     origin:'https://gpt-pi-beige.vercel.app',
     credentials: true
@@ -19,17 +18,16 @@ app.use(cors({
 
 app.use(express.json()); //to parse incoming req
 
-// Session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET ,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI,
-        touchAfter: 24 * 3600 // lazy session update
+        touchAfter: 24 * 3600 
     }),
     cookie: {
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true,
         secure: true, 
         sameSite: 'none'
