@@ -22,6 +22,12 @@ function App() {
   // Check if user is authenticated
   useEffect(() => {
     const checkAuth = async () => {
+      // If we just got redirected from OAuth, wait a bit for cookies to settle
+      const isAuthRedirect = new URL(window.location).searchParams.get('authenticated');
+      if (isAuthRedirect) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
@@ -29,11 +35,23 @@ function App() {
         console.log('Checking auth with API:', API_URL);
         const response = await fetch(`${API_URL}/api/auth/current-user`, {
           credentials: 'include',
-          signal: controller.signal
+          signal: controller.signal,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
         });
         clearTimeout(timeoutId);
         
         console.log('Auth response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        
+        if (!response.ok) {
+          console.error('Auth response not OK:', response.status, response.statusText);
+          setLoading(false);
+          return;
+        }
+        
         const data = await response.json();
         console.log('Auth data:', data);
         
