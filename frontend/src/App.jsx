@@ -29,6 +29,12 @@ function App() {
         const data = await response.json();
         if (data.user) {
           setUser(data.user);
+          // Clean up the URL after successful authentication
+          const url = new URL(window.location);
+          if (url.searchParams.get('authenticated')) {
+            url.searchParams.delete('authenticated');
+            window.history.replaceState({}, '', url);
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);

@@ -34,7 +34,8 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true,
         secure: isProduction, // Only require HTTPS in production
-        sameSite: isProduction ? 'none' : 'lax' // 'lax' for local, 'none' for cross-origin in production
+        sameSite: isProduction ? 'none' : 'lax', // 'lax' for local, 'none' for cross-origin in production
+        domain: isProduction ? undefined : undefined // Let browser handle domain automatically
     }
 }));
 

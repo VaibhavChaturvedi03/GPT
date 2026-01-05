@@ -1,7 +1,7 @@
 import './Login.css';
 
 function Login() {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+    const API_URL = import.meta.env.VITE_API_URL || 'https://gpt-kwt0.onrender.com';
 
     const handleGoogleLogin = () => {
         // Redirect to backend Google OAuth route
