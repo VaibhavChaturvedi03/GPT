@@ -22,11 +22,21 @@ function App() {
   // Check if user is authenticated
   useEffect(() => {
     const checkAuth = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       try {
+        console.log('Checking auth with API:', API_URL);
         const response = await fetch(`${API_URL}/api/auth/current-user`, {
-          credentials: 'include'
+          credentials: 'include',
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
+        
+        console.log('Auth response status:', response.status);
         const data = await response.json();
+        console.log('Auth data:', data);
+        
         if (data.user) {
           setUser(data.user);
           // Clean up the URL after successful authentication
@@ -37,14 +47,19 @@ function App() {
           }
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          console.error('Auth check timed out');
+        } else {
+          console.error('Auth check failed:', error);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
-  }, []);
+  }, [API_URL]);
 
   const providerValues = {
     prompt, setPrompt,
