@@ -1,68 +1,64 @@
-import express from 'express';
+import express from "express";
 import "dotenv/config";
 import mongoose from "mongoose";
-import cors from 'cors';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import passport from './config/passport.js';
-import chatRoutes from './routes/chat.js';
-import authRoutes from './routes/auth.js';
+import cors from "cors";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import passport from "./config/passport.js";
+import chatRoutes from "./routes/chat.js";
+import authRoutes from "./routes/auth.js";
 
 const app = express();
 const PORT = 8080;
 
-// Determine if we're in production or development
-const isProduction = process.env.NODE_ENV === 'production';
-const frontendURL = isProduction ? 'https://gpt-pi-beige.vercel.app' : 'http://localhost:5173';
+app.set("trust proxy", 1);
 
-app.use(cors({
-    origin: frontendURL,
+const FRONTEND_URL = "https://gpt-pi-beige.vercel.app";
+
+app.use(
+  cors({
+    origin: FRONTEND_URL,
     credentials: true
-}));
+  })
+);
 
-app.use(express.json()); //to parse incoming req
+app.use(express.json());
 
-app.use(session({
-    secret: process.env.SESSION_SECRET ,
+app.use(
+  session({
+    name: "gpt.sid", 
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URI,
-        touchAfter: 24 * 3600 
+      mongoUrl: process.env.MONGO_URI,
+      touchAfter: 24 * 3600
     }),
     cookie: {
-        maxAge: 24 * 60 * 60 * 1000, 
-        httpOnly: true,
-        secure: isProduction, // Only require HTTPS in production
-        sameSite: isProduction ? 'none' : 'lax', // 'lax' for local, 'none' for cross-origin in production
-        domain: isProduction ? undefined : undefined // Let browser handle domain automatically
+      maxAge: 24 * 60 * 60 * 1000, 
+      httpOnly: true,
+      secure: true,               
+      sameSite: "none"            
     }
-}));
+  })
+);
 
-// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/auth', authRoutes);
-app.use('/api',chatRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api", chatRoutes);
 
-const connectDB = async()=>{
-    try{
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("MongoDB connected");
-    }catch(err){
-        console.log("MongoDB failed to connect");
-        console.log(err);
-    }
-}
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("MongoDB connection failed:", err);
+  }
+};
 
 app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
-    connectDB();
+  console.log(`Server running on port ${PORT}`);
+  connectDB();
 });
-
-
-
-
-
-

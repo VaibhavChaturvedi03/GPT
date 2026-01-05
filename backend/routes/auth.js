@@ -15,8 +15,6 @@ router.get('/google/callback',
         session: true
     }),
     (req, res) => {
-        // After successful authentication, redirect to frontend
-        // The session cookie should now be set
         res.redirect(`${frontendURL}/?authenticated=true`);
     }
 );
